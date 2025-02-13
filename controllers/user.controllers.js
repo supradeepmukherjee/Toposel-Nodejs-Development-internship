@@ -6,8 +6,10 @@ import jwt from 'jsonwebtoken'
 
 const register = tryCatch(async (req, res, next) => {
     const { username, password, fullName, gender, dateOfBirth, country, email } = req.body
-    const userExists = await User.findOne({ username })
-    if (userExists) return next(new ErrorHandler(400, 'A user with the same username already exists'))
+    const usernameExists = await User.findOne({ username })
+    if (usernameExists) return next(new ErrorHandler(400, 'A user with the same username already exists'))
+    const emailExists = await User.findOne({ email })
+    if (emailExists) return next(new ErrorHandler(400, 'A user with the same email already exists'))
     const user = await User.create({ username, password, fullName, gender, dateOfBirth, country, email })
     res.status(201).json({ success: true, user, msg: 'User Registration Successful' })
 })
